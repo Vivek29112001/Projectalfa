@@ -7,6 +7,21 @@ const app = express();
 app.set('view engine','ejs');
 app.set('views',path.join(__dirname, 'views'));
 app.use(express.urlencoded());
+app.use(express.static('assets'));
+
+// middlewaare 1
+// app.use(function(res,req,next){
+//     req.myName="Vivek";
+//     // console.log("middleware1 called");
+//     next();
+// });
+
+// middlewaare 2
+// app.use(function(res,req,next){
+//     console.log('My Name from MW2',req.myName)
+//     // console.log("middleware2 called");
+//     next();
+// })
 
 var contactList = [
     {
@@ -26,7 +41,7 @@ var contactList = [
 
 
 app.get('/', function(req,res){
-
+// console.log('from the get route controlle',req.myName);
     return res.render('home',{
         title:"Contacts List",
         contact_list: contactList
@@ -50,6 +65,22 @@ contactList.push(req.body);
 return res.redirect('back');
 });
 
+
+// deleting contact
+app.get('/delete-contact', function(req,res){
+    // console.log(req.query);
+    // get query from url
+    let phone = req.query.phone;
+
+    let contactIndex=contactList.findIndex(contact => contact.phone == phone);
+
+    if (contactIndex != -1){
+        contactList.splice(contactIndex, 1);
+    }
+
+    return res.redirect('back');
+
+});
 
 app.listen(port, function (err) {
     if (err) {
